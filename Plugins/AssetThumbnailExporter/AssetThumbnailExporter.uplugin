@@ -1,0 +1,24 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "AssetThumbnailExporter",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "Naotsun",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "AssetThumbnailExporter",
+			"Type": "EditorNoCommandlet",
+			"LoadingPhase": "Default"
+		}
+	]
+}
