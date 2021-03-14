@@ -36,7 +36,9 @@ UThumbnailExporter::UThumbnailExporter(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer)
 {
 	SupportedClass = UObject::StaticClass();
-	PreferredFormatIndex = TNumericLimits<int32>().Max();
+	PreferredFormatIndex = 2;
+	BatchExportMode = true;
+	CancelBatch = true;
 
 	FormatExtension.Add(TEXT("EXR"));
 	FormatDescription.Add(TEXT("Export Thumbnail As EXR"));
@@ -51,7 +53,18 @@ bool UThumbnailExporter::SupportsObject(UObject* Object) const
 	auto* Settings = GetDefault<UAssetThumbnailExporterSettings>();
 	if (Super::SupportsObject(Object) && IsValid(Settings) && IsValid(Object))
 	{
-		return (Object->IsAsset() && Settings->SupportsAssetClasses.Contains(Object->GetClass()));
+		bool bIsSupportsOrChildClass = false;
+		UClass* ObjectClass = Object->GetClass();
+		for (const auto& SupportsAssetClass : Settings->SupportsAssetClasses)
+		{
+			if (SupportsAssetClass == ObjectClass || ObjectClass->IsChildOf(SupportsAssetClass))
+			{
+				bIsSupportsOrChildClass = true;
+				break;
+			}
+		}
+
+		return (Object->IsAsset() && bIsSupportsOrChildClass);
 	}
 
 	return false;
@@ -95,7 +108,7 @@ bool UThumbnailExporter::ExportBinary(UObject* Object, const TCHAR* Type, FArchi
 		return false;
 	}
 
-	const TArray64<uint8>& CompressedData = ImageWrapper->GetCompressed(100);
+	const TArray64<uint8>& CompressedData = ImageWrapper->GetCompressed();
 	if (CompressedData.Num() == 0)
 	{
 		Warn->Log(TEXT("The compressed data was empty."));
